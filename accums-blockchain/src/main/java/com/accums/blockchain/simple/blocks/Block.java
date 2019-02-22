@@ -3,11 +3,16 @@ package com.accums.blockchain.simple.blocks;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.accums.blockchain.model.MembershipLedgerSummary;
 
 
 
 public class Block {
+	private final Logger LOG = LoggerFactory.getLogger(getClass());
+	
 	public Integer blockNumber;
 	public String hash;
 	public String previousHash;
@@ -54,8 +59,8 @@ public class Block {
 			this.nonce ++;
 			this.hash = calculateHash();
 		}
-		System.out.println("Nonce =" +nonce);
-		System.out.println("Block Mined!!! : " + hash);
+		LOG.info("Nonce =" +nonce);
+		LOG.info("Block Mined!!! : " + hash);
 	}
 
 	@Override

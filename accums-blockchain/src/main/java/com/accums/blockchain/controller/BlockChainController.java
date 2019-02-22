@@ -1,8 +1,6 @@
 package com.accums.blockchain.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +17,6 @@ import com.accums.blockchain.repository.CustomMembershipSumRepository;
 import com.accums.blockchain.repository.MembershipSumRespository;
 import com.accums.blockchain.service.BlockChainService;
 import com.accums.blockchain.simple.blocks.Block;
-import com.google.gson.GsonBuilder;
 
 @RestController
 public class BlockChainController {
@@ -60,10 +57,9 @@ public class BlockChainController {
 			memSummaryList = membershipSumRespository.findAll();
 			blockInChain.get().setMemberLedgerList(memSummaryList);
 			blockInChain.get().setValidChain(blockChainService.isChainValid(chain));
-			System.out.println("\nBlockchain is Valid: " + blockChainService.isChainValid(chain));
+			LOG.info("\nBlockchain is Valid: " + blockChainService.isChainValid(chain));
 			chain.get(chain.indexOf(blockInChain.get())).mineBlock(difficulty);
 			if (chain.indexOf(blockInChain.get()) != 0) {
-				System.out.println(chain.indexOf(blockInChain.get()));
 				blockInChain.get().setPreviousHash(chain.get(chain.indexOf(blockInChain.get()) - 1).hash);
 			}
 		}
@@ -77,6 +73,11 @@ public class BlockChainController {
 		chain.forEach(block -> block.setValidChain(blockChainService.isChainValid(chain)));
 		return chain;
 
+	}
+	
+	@RequestMapping(value = "/saveLedgerData", method = RequestMethod.POST)
+	public void saveLedgerData(@RequestBody List<MembershipLedgerSummary> memLedgerList) {
+		customMembershipSumRepository.updateMemberLedger(memLedgerList);
 	}
 
 }

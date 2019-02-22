@@ -2,6 +2,8 @@ package com.accums.blockchain.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -13,6 +15,8 @@ public class BlockChainServiceImpl implements BlockChainService{
 	private static int BLOCK_SIZE = 3;
 	
 	public static int difficulty = 1;
+	
+	private final Logger LOG = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public void createBlocks(List<MembershipLedgerSummary> memSumList,List<Block> chain) {
@@ -41,17 +45,17 @@ public class BlockChainServiceImpl implements BlockChainService{
 			previousBlock = blockchain.get(i-1);
 			//compare registered hash and calculated hash:
 			if(!currentBlock.hash.equals(currentBlock.calculateHash()) ){
-				System.out.println("Current Hashes not equal");
+				LOG.info("Current Hashes not equal");
 				return false;
 			}
 			//compare previous hash and registered previous hash
 			if(!previousBlock.hash.equals(currentBlock.previousHash) ) {
-				System.out.println("Previous Hashes not equal");
+				LOG.info("Previous Hashes not equal");
 				return false;
 			}
 			//check if hash is solved
 			if(!currentBlock.hash.substring( 0, difficulty).equals(hashTarget)) {
-				System.out.println("This block hasn't been mined");
+				LOG.info("This block hasn't been mined");
 				return false;
 			}
 		}
