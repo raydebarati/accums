@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '../node_modules/primeng/resources/themes/omega/theme.css';
+@import '../node_modules/primeng/resources/primeng.min.css';
+
+
+.block{
+    height: 10%;
+    background-color: aqua;
+}
+
+.class1{
+    background-color: rgb(226, 15, 15) !important;
+}
