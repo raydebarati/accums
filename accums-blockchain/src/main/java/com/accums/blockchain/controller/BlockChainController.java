@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,6 +39,7 @@ public class BlockChainController {
 	@Autowired
 	private BlockChainService blockChainService;
 
+	@CrossOrigin
 	@RequestMapping(value = "/getAllBlocks", method = RequestMethod.GET)
 	public List<Block> getAllMembers() {
 		LOG.info("Getting all users.");
@@ -49,6 +51,7 @@ public class BlockChainController {
 
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
 	public Block saveOrUpdateMember(@RequestBody Block memberBlock) {
 		Optional<Block> blockInChain = chain.stream()
@@ -68,6 +71,7 @@ public class BlockChainController {
 		return blockInChain.get();
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "/mineBlocks", method = RequestMethod.GET)
 	public List<Block> mineBlocks() {
 		chain.clear();
@@ -76,7 +80,8 @@ public class BlockChainController {
 		return chain;
 
 	}
-
+	
+	@CrossOrigin
 	@RequestMapping(value = "/saveLedgerData", method = RequestMethod.POST)
 	public void saveLedgerData(@RequestBody List<MembershipLedgerSummary> memLedgerList) {
 		customMembershipSumRepository.updateMemberLedger(memLedgerList);
