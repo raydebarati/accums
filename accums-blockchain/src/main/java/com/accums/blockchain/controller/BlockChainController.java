@@ -7,11 +7,13 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.accums.blockchain.constants.AccumConstants;
 import com.accums.blockchain.model.MembershipLedgerSummary;
 import com.accums.blockchain.repository.CustomMembershipSumRepository;
 import com.accums.blockchain.repository.MembershipSumRespository;
@@ -27,8 +29,6 @@ public class BlockChainController {
 
 	private static List<MembershipLedgerSummary> memSummaryList = new ArrayList<MembershipLedgerSummary>();
 
-	public static int difficulty = 1;
-
 	@Autowired
 	private MembershipSumRespository membershipSumRespository;
 
@@ -42,7 +42,9 @@ public class BlockChainController {
 	public List<Block> getAllMembers() {
 		LOG.info("Getting all users.");
 		memSummaryList = membershipSumRespository.findAll();
-		blockChainService.createBlocks(memSummaryList, chain);
+		if (CollectionUtils.isEmpty(chain) && !CollectionUtils.isEmpty(memSummaryList)) {
+			blockChainService.createBlocks(memSummaryList, chain);
+		}
 		return chain;
 
 	}
@@ -58,7 +60,7 @@ public class BlockChainController {
 			blockInChain.get().setMemberLedgerList(memSummaryList);
 			blockInChain.get().setValidChain(blockChainService.isChainValid(chain));
 			LOG.info("\nBlockchain is Valid: " + blockChainService.isChainValid(chain));
-			chain.get(chain.indexOf(blockInChain.get())).mineBlock(difficulty);
+			chain.get(chain.indexOf(blockInChain.get())).mineBlock(AccumConstants.DIFFICULTY_LEVEL);
 			if (chain.indexOf(blockInChain.get()) != 0) {
 				blockInChain.get().setPreviousHash(chain.get(chain.indexOf(blockInChain.get()) - 1).hash);
 			}
@@ -74,7 +76,7 @@ public class BlockChainController {
 		return chain;
 
 	}
-	
+
 	@RequestMapping(value = "/saveLedgerData", method = RequestMethod.POST)
 	public void saveLedgerData(@RequestBody List<MembershipLedgerSummary> memLedgerList) {
 		customMembershipSumRepository.updateMemberLedger(memLedgerList);

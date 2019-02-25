@@ -1,0 +1,12 @@
+---
+applications:
+- name: accums-blockchain
+  instances: 1
+  memory: 768M
+  routes:
+  - route: accums-blockchain.cfapps.io
+  path: /target/accums-blockchain-0.0.1-SNAPSHOT.jar
+  env:
+    SPRING_PROFILES_ACTIVE: cloud
+  services:
+  - mongo
